@@ -5,8 +5,6 @@ document.addEventListener('DOMContentLoaded', function () {
 		return;
 	}
 
-    console.log('AJAX config:', educraftCaseStudyFilter);
-
 	filterSelect.addEventListener('change', function () {
 		resultsContainer.setAttribute('aria-busy', 'true');
         const requestBody = new URLSearchParams();
