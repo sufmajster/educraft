@@ -26,6 +26,7 @@ require_once EDUCRAFT_CORE_PATH . 'src/Core/Plugin.php';
 require_once EDUCRAFT_CORE_PATH . 'src/PostTypes/CaseStudyPostType.php';
 require_once EDUCRAFT_CORE_PATH . 'src/Taxonomies/IndustryTaxonomy.php';
 require_once EDUCRAFT_CORE_PATH . 'src/Ajax/CaseStudyFilterAjax.php';
+require_once EDUCRAFT_CORE_PATH . 'src/WooCommerce/CheckoutFields.php';
 
 $educraft_core = new Plugin();
 $educraft_core->init();
