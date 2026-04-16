@@ -25,6 +25,7 @@ define( 'EDUCRAFT_CORE_URL', plugin_dir_url( __FILE__ ) );
 require_once EDUCRAFT_CORE_PATH . 'src/Core/Plugin.php';
 require_once EDUCRAFT_CORE_PATH . 'src/PostTypes/CaseStudyPostType.php';
 require_once EDUCRAFT_CORE_PATH . 'src/Taxonomies/IndustryTaxonomy.php';
+require_once EDUCRAFT_CORE_PATH . 'src/Ajax/CaseStudyFilterAjax.php';
 
 $educraft_core = new Plugin();
 $educraft_core->init();
