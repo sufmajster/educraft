@@ -21,3 +21,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 define( 'EDUCRAFT_CORE_VERSION', '1.0.0' );
 define( 'EDUCRAFT_CORE_PATH', plugin_dir_path( __FILE__ ) );
 define( 'EDUCRAFT_CORE_URL', plugin_dir_url( __FILE__ ) );
+
+require_once EDUCRAFT_CORE_PATH . 'src/Core/Plugin.php';
+require_once EDUCRAFT_CORE_PATH . 'src/PostTypes/CaseStudyPostType.php';
+require_once EDUCRAFT_CORE_PATH . 'src/Taxonomies/IndustryTaxonomy.php';
+
+$educraft_core = new Plugin();
+$educraft_core->init();
