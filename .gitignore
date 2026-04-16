@@ -1,0 +1,41 @@
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+
+# Logs
+*.log
+debug.log
+
+# Local environment
+wp-config.php
+.htaccess
+local-debug-info.php
+local-xdebuginfo.php
+
+# WordPress core
+wp-admin/
+wp-includes/
+index.php
+license.txt
+readme.html
+wp-*.php
+xmlrpc.php
+
+# Uploads and cache
+wp-content/uploads/
+wp-content/cache/
+wp-content/upgrade/
+
+# Dependencies
+node_modules/
+vendor/
+
+# Ignore all themes and plugins by default
+wp-content/themes/*
+!wp-content/themes/educraft-theme/
+!wp-content/themes/educraft-theme/**
+
+wp-content/plugins/*
+!wp-content/plugins/educraft-core/
+!wp-content/plugins/educraft-core/**
