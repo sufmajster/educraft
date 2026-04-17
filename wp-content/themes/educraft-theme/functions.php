@@ -31,3 +31,16 @@ function educraft_theme_setup() {
 	);
 }
 add_action( 'after_setup_theme', 'educraft_theme_setup' );
+
+/**
+ * Front-end styles (single stylesheet).
+ */
+function educraft_theme_enqueue_styles() {
+	wp_enqueue_style(
+		'educraft-theme',
+		get_stylesheet_uri(),
+		array(),
+		wp_get_theme()->get( 'Version' )
+	);
+}
+add_action( 'wp_enqueue_scripts', 'educraft_theme_enqueue_styles' );

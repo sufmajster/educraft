@@ -11,3 +11,636 @@ License: GNU General Public License v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: educraft-theme
 */
+
+/* --------------------------------------------------------------------------
+   Design tokens — light, readable, minimal (case study + WooCommerce)
+   -------------------------------------------------------------------------- */
+
+:root {
+	--ec-bg: #f6f7f9;
+	--ec-surface: #ffffff;
+	--ec-text: #1b1f26;
+	--ec-text-muted: #5a6270;
+	--ec-border: #e1e5eb;
+	--ec-border-strong: #cdd3dd;
+	--ec-accent: #1d4ed8;
+	--ec-accent-hover: #1e40af;
+	--ec-radius: 10px;
+	--ec-radius-sm: 6px;
+	--ec-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+	--ec-shadow-md: 0 1px 2px rgba(15, 23, 42, 0.06), 0 8px 24px rgba(15, 23, 42, 0.06);
+	--ec-max: 68rem;
+	--ec-space: 1.25rem;
+	--ec-font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html {
+	-webkit-text-size-adjust: 100%;
+}
+
+body {
+	margin: 0;
+	font-family: var(--ec-font);
+	font-size: 1rem;
+	line-height: 1.6;
+	color: var(--ec-text);
+	background: var(--ec-bg);
+	text-rendering: optimizeLegibility;
+}
+
+img {
+	max-width: 100%;
+	height: auto;
+	vertical-align: middle;
+}
+
+a {
+	color: var(--ec-accent);
+	text-decoration-thickness: 1px;
+	text-underline-offset: 0.15em;
+}
+
+a:hover {
+	color: var(--ec-accent-hover);
+}
+
+/* Content width — case study templates + generic main / Woo wrappers */
+main#primary.site-main,
+#primary.site-main,
+.site-main {
+	max-width: var(--ec-max);
+	margin-left: auto;
+	margin-right: auto;
+	padding: clamp(1rem, 4vw, 2rem);
+}
+
+.entry-title {
+	margin-top: 0;
+	margin-bottom: 1rem;
+	font-size: clamp(1.75rem, 4vw, 2.25rem);
+	font-weight: 650;
+	line-height: 1.25;
+	letter-spacing: -0.02em;
+}
+
+/* --------------------------------------------------------------------------
+   Case study archive
+   -------------------------------------------------------------------------- */
+
+.case-study-archive__header {
+	margin-bottom: var(--ec-space);
+	padding-bottom: 1rem;
+	border-bottom: 1px solid var(--ec-border);
+}
+
+.case-study-archive__title {
+	margin: 0;
+	font-size: clamp(1.75rem, 4vw, 2rem);
+	font-weight: 650;
+	letter-spacing: -0.02em;
+}
+
+.case-study-archive__filters {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.65rem 1rem;
+	margin-bottom: 1.75rem;
+	padding: 0.85rem 1rem;
+	background: var(--ec-surface);
+	border: 1px solid var(--ec-border);
+	border-radius: var(--ec-radius);
+	box-shadow: var(--ec-shadow);
+}
+
+.case-study-archive__filters label {
+	font-weight: 600;
+	font-size: 0.95rem;
+	color: var(--ec-text);
+}
+
+.case-study-archive__filters select {
+	min-width: min(100%, 16rem);
+	padding: 0.55rem 0.75rem;
+	font: inherit;
+	color: var(--ec-text);
+	background: var(--ec-bg);
+	border: 1px solid var(--ec-border-strong);
+	border-radius: var(--ec-radius-sm);
+	cursor: pointer;
+}
+
+.case-study-archive__filters select:focus {
+	outline: 2px solid var(--ec-accent);
+	outline-offset: 2px;
+}
+
+.case-study-archive__list {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(17.5rem, 1fr));
+	gap: 1.25rem;
+}
+
+.case-study-archive__empty {
+	margin: 0;
+	padding: 2rem 1.25rem;
+	text-align: center;
+	color: var(--ec-text-muted);
+	background: var(--ec-surface);
+	border: 1px dashed var(--ec-border-strong);
+	border-radius: var(--ec-radius);
+}
+
+/* --------------------------------------------------------------------------
+   Case study card (BEM)
+   -------------------------------------------------------------------------- */
+
+.case-study-card {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	padding: 0;
+	background: var(--ec-surface);
+	border: 1px solid var(--ec-border);
+	border-radius: var(--ec-radius);
+	box-shadow: var(--ec-shadow);
+	overflow: hidden;
+	transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.case-study-card:hover {
+	border-color: var(--ec-border-strong);
+	box-shadow: var(--ec-shadow-md);
+}
+
+.case-study-card__media {
+	margin: 0;
+	aspect-ratio: 4 / 3;
+	background: var(--ec-bg);
+	overflow: hidden;
+}
+
+.case-study-card__media a {
+	display: block;
+	height: 100%;
+}
+
+.case-study-card__image {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.case-study-card__header {
+	padding: 1rem 1.1rem 0;
+}
+
+.case-study-card__title {
+	margin: 0;
+	font-size: 1.1rem;
+	font-weight: 650;
+	line-height: 1.35;
+}
+
+.case-study-card__title a {
+	color: var(--ec-text);
+	text-decoration: none;
+}
+
+.case-study-card__title a:hover {
+	color: var(--ec-accent);
+}
+
+.case-study-card__industries {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.35rem;
+	margin: 0.65rem 1.1rem 0;
+	padding: 0;
+	list-style: none;
+}
+
+.case-study-card__industries li {
+	padding: 0.2rem 0.55rem;
+	font-size: 0.8rem;
+	font-weight: 500;
+	color: var(--ec-text-muted);
+	background: var(--ec-bg);
+	border: 1px solid var(--ec-border);
+	border-radius: 999px;
+}
+
+.case-study-card__client {
+	margin: 0.75rem 1.1rem 0;
+	font-size: 0.9rem;
+	font-weight: 600;
+	color: var(--ec-text-muted);
+}
+
+.case-study-card__summary {
+	margin: 0.65rem 1.1rem 0;
+	font-size: 0.9rem;
+	line-height: 1.55;
+	color: var(--ec-text-muted);
+}
+
+.case-study-card__summary p {
+	margin: 0 0 0.5rem;
+}
+
+.case-study-card__summary p:last-child {
+	margin-bottom: 0;
+}
+
+.case-study-card__more {
+	margin: auto 0 0;
+	padding: 1rem 1.1rem 1.1rem;
+}
+
+.case-study-card__more a {
+	display: inline-block;
+	font-weight: 600;
+	font-size: 0.9rem;
+	text-decoration: none;
+}
+
+.case-study-card__more a:hover {
+	text-decoration: underline;
+}
+
+/* --------------------------------------------------------------------------
+   Single case study (BEM)
+   -------------------------------------------------------------------------- */
+
+.case-study {
+	background: var(--ec-surface);
+	border: 1px solid var(--ec-border);
+	border-radius: var(--ec-radius);
+	box-shadow: var(--ec-shadow);
+	padding: clamp(1.25rem, 4vw, 2rem);
+}
+
+.case-study__header {
+	margin-bottom: 1.5rem;
+	padding-bottom: 1rem;
+	border-bottom: 1px solid var(--ec-border);
+}
+
+.case-study__title {
+	margin: 0;
+	font-size: clamp(1.85rem, 4.5vw, 2.35rem);
+	font-weight: 650;
+	line-height: 1.2;
+	letter-spacing: -0.02em;
+}
+
+.case-study__section-title {
+	margin: 0 0 0.65rem;
+	font-size: 0.8rem;
+	font-weight: 700;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: var(--ec-text-muted);
+}
+
+.case-study__industries,
+.case-study__client,
+.case-study__summary,
+.case-study__content,
+.case-study__client-link,
+.case-study__gallery {
+	margin-top: 1.75rem;
+	padding-top: 1.5rem;
+	border-top: 1px solid var(--ec-border);
+}
+
+.case-study__industry-list {
+	margin: 0;
+	padding-left: 1.25rem;
+	color: var(--ec-text);
+}
+
+.case-study__client-name {
+	margin: 0;
+	font-size: 1.05rem;
+	font-weight: 600;
+}
+
+.case-study__featured-image {
+	margin: 1.5rem 0 0;
+	border-radius: var(--ec-radius-sm);
+	overflow: hidden;
+	border: 1px solid var(--ec-border);
+	background: var(--ec-bg);
+}
+
+.case-study__featured-image-img {
+	display: block;
+	width: 100%;
+}
+
+.case-study__summary-text,
+.case-study__entry-content {
+	color: var(--ec-text);
+}
+
+.case-study__summary-text p,
+.case-study__entry-content p {
+	margin: 0 0 1rem;
+}
+
+.case-study__entry-content > *:last-child,
+.case-study__summary-text > *:last-child {
+	margin-bottom: 0;
+}
+
+.case-study__client-link p {
+	margin: 0;
+}
+
+.case-study__gallery-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+	gap: 0.75rem;
+	margin-top: 0.5rem;
+}
+
+.case-study__gallery-image {
+	display: block;
+	width: 100%;
+	height: auto;
+	border-radius: var(--ec-radius-sm);
+	border: 1px solid var(--ec-border);
+	object-fit: cover;
+}
+
+/* --------------------------------------------------------------------------
+   WooCommerce — classic markup + shared components
+   -------------------------------------------------------------------------- */
+
+.woocommerce .woocommerce-breadcrumb,
+.woocommerce-page .woocommerce-breadcrumb {
+	margin-bottom: 1rem;
+	font-size: 0.875rem;
+	color: var(--ec-text-muted);
+}
+
+.woocommerce .woocommerce-breadcrumb a,
+.woocommerce-page .woocommerce-breadcrumb a {
+	color: var(--ec-text-muted);
+}
+
+.woocommerce .woocommerce-breadcrumb a:hover,
+.woocommerce-page .woocommerce-breadcrumb a:hover {
+	color: var(--ec-accent);
+}
+
+.woocommerce ul.products,
+.woocommerce-page ul.products {
+	margin: 0 0 1.5rem;
+	padding: 0;
+	list-style: none;
+}
+
+.woocommerce ul.products li.product,
+.woocommerce-page ul.products li.product {
+	background: var(--ec-surface);
+	border: 1px solid var(--ec-border);
+	border-radius: var(--ec-radius);
+	box-shadow: var(--ec-shadow);
+	padding: 1rem;
+	margin-bottom: 0;
+	transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.woocommerce ul.products li.product:hover,
+.woocommerce-page ul.products li.product:hover {
+	border-color: var(--ec-border-strong);
+	box-shadow: var(--ec-shadow-md);
+}
+
+.woocommerce ul.products li.product .woocommerce-loop-product__title,
+.woocommerce-page ul.products li.product .woocommerce-loop-product__title {
+	font-size: 1rem;
+	font-weight: 650;
+	margin: 0.5rem 0;
+	padding: 0;
+}
+
+.woocommerce ul.products li.product .price,
+.woocommerce-page ul.products li.product .price {
+	color: var(--ec-text);
+	font-weight: 600;
+}
+
+.woocommerce ul.products li.product .button,
+.woocommerce-page ul.products li.product .button {
+	margin-top: 0.5rem;
+}
+
+.woocommerce div.product,
+.woocommerce-page div.product {
+	background: var(--ec-surface);
+	border: 1px solid var(--ec-border);
+	border-radius: var(--ec-radius);
+	box-shadow: var(--ec-shadow);
+	padding: clamp(1rem, 3vw, 1.75rem);
+}
+
+.woocommerce div.product .product_title,
+.woocommerce-page div.product .product_title {
+	margin-top: 0;
+	font-size: clamp(1.5rem, 3.5vw, 2rem);
+	font-weight: 650;
+	letter-spacing: -0.02em;
+}
+
+.woocommerce div.product p.price,
+.woocommerce-page div.product p.price {
+	font-size: 1.25rem;
+	font-weight: 700;
+	color: var(--ec-text);
+}
+
+.woocommerce table.shop_table,
+.woocommerce-page table.shop_table {
+	border-collapse: collapse;
+	width: 100%;
+	background: var(--ec-surface);
+	border: 1px solid var(--ec-border);
+	border-radius: var(--ec-radius);
+	overflow: hidden;
+	box-shadow: var(--ec-shadow);
+}
+
+.woocommerce table.shop_table th,
+.woocommerce table.shop_table td,
+.woocommerce-page table.shop_table th,
+.woocommerce-page table.shop_table td {
+	border-bottom: 1px solid var(--ec-border);
+	padding: 0.85rem 1rem;
+	text-align: left;
+}
+
+.woocommerce table.shop_table thead th,
+.woocommerce-page table.shop_table thead th {
+	background: var(--ec-bg);
+	font-size: 0.8rem;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	color: var(--ec-text-muted);
+}
+
+.woocommerce-cart .cart-collaterals .cart_totals,
+.woocommerce-page.woocommerce-cart .cart-collaterals .cart_totals {
+	background: var(--ec-surface);
+	border: 1px solid var(--ec-border);
+	border-radius: var(--ec-radius);
+	padding: 1rem 1.25rem;
+	box-shadow: var(--ec-shadow);
+}
+
+.woocommerce .quantity .qty,
+.woocommerce-page .quantity .qty {
+	width: 4.5rem;
+	padding: 0.45rem 0.5rem;
+	font: inherit;
+	border: 1px solid var(--ec-border-strong);
+	border-radius: var(--ec-radius-sm);
+	background: var(--ec-surface);
+}
+
+.woocommerce .cart .button,
+.woocommerce .checkout .button,
+.woocommerce button.button,
+.woocommerce a.button,
+.woocommerce-page .cart .button,
+.woocommerce-page .checkout .button,
+.woocommerce-page button.button,
+.woocommerce-page a.button,
+.woocommerce #respond input#submit {
+	font: inherit;
+	font-weight: 600;
+	border-radius: var(--ec-radius-sm);
+	padding: 0.55rem 1.1rem;
+	background: var(--ec-accent);
+	color: #fff;
+	border: 1px solid transparent;
+	cursor: pointer;
+	text-decoration: none;
+	box-shadow: none;
+}
+
+.woocommerce .cart .button:hover,
+.woocommerce .checkout .button:hover,
+.woocommerce button.button:hover,
+.woocommerce a.button:hover,
+.woocommerce-page .cart .button:hover,
+.woocommerce-page .checkout .button:hover,
+.woocommerce-page button.button:hover,
+.woocommerce-page a.button:hover,
+.woocommerce #respond input#submit:hover,
+.woocommerce a.button.alt:hover,
+.woocommerce button.button.alt:hover,
+.woocommerce-page #respond input#submit:hover,
+.woocommerce-page a.button.alt:hover,
+.woocommerce-page button.button.alt:hover {
+	background: var(--ec-accent-hover);
+	color: #fff;
+}
+
+.woocommerce a.button.alt,
+.woocommerce button.button.alt,
+.woocommerce-page a.button.alt,
+.woocommerce-page button.button.alt {
+	background: var(--ec-accent);
+	color: #fff;
+}
+
+.woocommerce form .form-row input.input-text,
+.woocommerce form .form-row textarea,
+.woocommerce-page form .form-row input.input-text,
+.woocommerce-page form .form-row textarea {
+	font: inherit;
+	padding: 0.55rem 0.65rem;
+	border: 1px solid var(--ec-border-strong);
+	border-radius: var(--ec-radius-sm);
+	background: var(--ec-surface);
+	width: 100%;
+	max-width: 100%;
+}
+
+.woocommerce form .form-row input.input-text:focus,
+.woocommerce form .form-row textarea:focus,
+.woocommerce-page form .form-row input.input-text:focus,
+.woocommerce-page form .form-row textarea:focus {
+	outline: 2px solid var(--ec-accent);
+	outline-offset: 1px;
+	border-color: var(--ec-accent);
+}
+
+.woocommerce-checkout #customer_details .col-1,
+.woocommerce-checkout #customer_details .col-2,
+.woocommerce-page.woocommerce-checkout #customer_details .col-1,
+.woocommerce-page.woocommerce-checkout #customer_details .col-2 {
+	background: var(--ec-surface);
+	border: 1px solid var(--ec-border);
+	border-radius: var(--ec-radius);
+	padding: 1rem 1.25rem;
+	margin-bottom: 1rem;
+	box-shadow: var(--ec-shadow);
+}
+
+/* --------------------------------------------------------------------------
+   WooCommerce Blocks (cart / checkout block)
+   -------------------------------------------------------------------------- */
+
+.wc-block-components-text-input input,
+.wc-block-components-text-input textarea,
+.wc-block-components-combobox input,
+.wc-block-components-form .wc-block-components-text-input input {
+	font: inherit;
+	border-radius: var(--ec-radius-sm) !important;
+	border-color: var(--ec-border-strong) !important;
+}
+
+.wc-block-components-text-input input:focus,
+.wc-block-components-text-input textarea:focus {
+	border-color: var(--ec-accent) !important;
+	box-shadow: 0 0 0 1px var(--ec-accent) !important;
+}
+
+.wc-block-components-button:not(.is-link),
+.wp-block-woocommerce-checkout-actions-block .wc-block-components-button {
+	border-radius: var(--ec-radius-sm) !important;
+}
+
+.wc-block-cart__main,
+.wc-block-checkout__main,
+.wp-block-woocommerce-cart-order-summary-block,
+.wp-block-woocommerce-checkout-order-summary-block {
+	background: var(--ec-surface);
+	border: 1px solid var(--ec-border);
+	border-radius: var(--ec-radius);
+	padding: 1rem;
+	box-shadow: var(--ec-shadow);
+}
+
+.wc-block-components-totals-item,
+.wc-block-cart-items__row {
+	border-color: var(--ec-border) !important;
+}
+
+.wc-block-components-sidebar-layout .wc-block-components-sidebar {
+	background: var(--ec-surface);
+	border: 1px solid var(--ec-border);
+	border-radius: var(--ec-radius);
+	padding: 1rem;
+	box-shadow: var(--ec-shadow);
+}
