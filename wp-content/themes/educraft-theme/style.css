@@ -565,7 +565,8 @@ main#primary.site-main,
 }
 
 .case-study__featured-image {
-	margin: 1.5rem 0 0;
+	margin: 1.5rem auto 0;
+	max-width: min(34rem, 100%);
 	border-radius: var(--ec-radius-sm);
 	overflow: hidden;
 	border: 1px solid var(--ec-border);
@@ -575,6 +576,7 @@ main#primary.site-main,
 .case-study__featured-image-img {
 	display: block;
 	width: 100%;
+	height: auto;
 }
 
 .case-study__summary-text,
