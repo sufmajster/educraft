@@ -29,18 +29,34 @@ function educraft_theme_setup() {
 			'script',
 		)
 	);
+
+	register_nav_menus(
+		array(
+			'primary' => __( 'Menu główne', 'educraft-theme' ),
+		)
+	);
 }
 add_action( 'after_setup_theme', 'educraft_theme_setup' );
 
 /**
  * Front-end styles (single stylesheet).
  */
-function educraft_theme_enqueue_styles() {
+function educraft_theme_enqueue_assets() {
+	$ver = wp_get_theme()->get( 'Version' );
+
 	wp_enqueue_style(
 		'educraft-theme',
 		get_stylesheet_uri(),
 		array(),
-		wp_get_theme()->get( 'Version' )
+		$ver
+	);
+
+	wp_enqueue_script(
+		'educraft-theme-navigation',
+		get_template_directory_uri() . '/assets/js/navigation.js',
+		array(),
+		$ver,
+		true
 	);
 }
-add_action( 'wp_enqueue_scripts', 'educraft_theme_enqueue_styles' );
+add_action( 'wp_enqueue_scripts', 'educraft_theme_enqueue_assets' );
