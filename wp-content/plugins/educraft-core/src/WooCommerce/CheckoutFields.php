@@ -1,6 +1,6 @@
 <?php
 /**
- * Checkout-related WooCommerce logic.
+ * Additional Checkout Fields (Checkout Block) and B2B NIP logic.
  *
  * @package EduCraft_Core
  */
@@ -11,51 +11,181 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class CheckoutFields {
 
+	private static bool $checkout_field_registered = false;
+
+	private static bool $cart_extension_registered = false;
+
 	public function register_hooks(): void {
-		add_filter( 'woocommerce_checkout_fields', array( $this, 'add_nip_field_if_needed' ) );
-		add_action( 'woocommerce_after_checkout_validation', array( $this, 'validate_nip_field' ), 10, 2 );
+		add_action( 'woocommerce_init', array( $this, 'register_additional_checkout_field' ), 20 );
+		add_action( 'woocommerce_blocks_loaded', array( $this, 'register_cart_extension' ) );
 	}
 
-	public function add_nip_field_if_needed( array $fields ): array {
-		if ( ! $this->cart_contains_b2b_product() ) {
-			return $fields;
+	public function register_additional_checkout_field(): void {
+		if ( self::$checkout_field_registered ) {
+			return;
 		}
 
-		if ( ! isset( $fields['billing'] ) || ! is_array( $fields['billing'] ) ) {
-			$fields['billing'] = array();
+		if ( ! function_exists( 'woocommerce_register_additional_checkout_field' ) ) {
+			return;
 		}
 
-		$fields['billing']['billing_nip'] = array(
-			'type'        => 'text',
-			'label'       => __( 'NIP', 'educraft-core' ),
-			'required'    => true,
-			'class'       => array( 'form-row-wide' ),
-			'priority'    => 120,
+		woocommerce_register_additional_checkout_field(
+			array(
+				'id'                => 'educraft-core/billing-nip',
+				'label'             => __( 'NIP', 'educraft-core' ),
+				'optionalLabel'     => __( 'NIP (opcjonalnie)', 'educraft-core' ),
+				'location'          => 'order',
+				'type'              => 'text',
+				'required'          => $this->get_nip_required_schema(),
+				'hidden'            => $this->get_nip_hidden_schema(),
+				'attributes'        => array(
+					'maxLength' => 15,
+				),
+				'sanitize_callback' => array( $this, 'sanitize_nip_value' ),
+				'validate_callback' => array( $this, 'validate_nip_value' ),
+			)
 		);
 
-		return $fields;
+		self::$checkout_field_registered = true;
 	}
 
-	public function validate_nip_field( array $data, WP_Error $errors ): void {
-		if ( ! $this->cart_contains_b2b_product() ) {
+	public function register_cart_extension(): void {
+		if ( self::$cart_extension_registered ) {
 			return;
 		}
 
-		$raw = isset( $data['billing_nip'] ) ? (string) $data['billing_nip'] : '';
-		$nip = preg_replace( '/[\s\-]/', '', $raw );
-
-		if ( ! is_string( $nip ) ) {
-			$nip = '';
+		if ( ! function_exists( 'woocommerce_store_api_register_endpoint_data' ) ) {
+			return;
 		}
+
+		if ( ! class_exists( \Automattic\WooCommerce\StoreApi\Schemas\V1\CartSchema::class ) ) {
+			return;
+		}
+
+		woocommerce_store_api_register_endpoint_data(
+			array(
+				'endpoint'        => \Automattic\WooCommerce\StoreApi\Schemas\V1\CartSchema::IDENTIFIER,
+				'namespace'       => 'educraft-core',
+				'data_callback'   => array( $this, 'get_cart_extension_data' ),
+				'schema_callback' => array( $this, 'get_cart_extension_schema' ),
+				'schema_type'     => ARRAY_A,
+			)
+		);
+
+		self::$cart_extension_registered = true;
+	}
+
+	public function get_cart_extension_data(): array {
+		return array(
+			'has_b2b' => $this->cart_contains_b2b_product(),
+		);
+	}
+
+	public function get_cart_extension_schema(): array {
+		return array(
+			'has_b2b' => array(
+				'description' => __( 'Whether the cart contains a B2B product.', 'educraft-core' ),
+				'type'        => 'boolean',
+				'context'     => array( 'view', 'edit' ),
+				'readonly'    => true,
+			),
+		);
+	}
+
+	public function sanitize_nip_value( $value ): string {
+		if ( ! is_string( $value ) ) {
+			return '';
+		}
+
+		return (string) preg_replace( '/[\s\-]/', '', $value );
+	}
+
+	public function validate_nip_value( $value ) {
+		if ( ! $this->cart_contains_b2b_product() ) {
+			return true;
+		}
+
+		$nip = is_string( $value ) ? $value : '';
 
 		if ( '' === $nip ) {
-			$errors->add( 'billing_nip', __( 'Pole NIP jest wymagane.', 'educraft-core' ) );
-			return;
+			return new WP_Error(
+				'educraft_nip_required',
+				__( 'Pole NIP jest wymagane.', 'educraft-core' )
+			);
 		}
 
 		if ( ! $this->is_valid_nip( $nip ) ) {
-			$errors->add( 'billing_nip', __( 'Podano nieprawidłowy numer NIP.', 'educraft-core' ) );
+			return new WP_Error(
+				'educraft_nip_invalid',
+				__( 'Podano nieprawidłowy numer NIP.', 'educraft-core' )
+			);
 		}
+
+		return true;
+	}
+
+	public static function get_nip_from_order( $order ): string {
+		if ( ! $order instanceof \WC_Order ) {
+			return '';
+		}
+
+		if ( class_exists( \Automattic\WooCommerce\Blocks\Package::class ) ) {
+			$checkout_fields = \Automattic\WooCommerce\Blocks\Package::container()->get(
+				\Automattic\WooCommerce\Blocks\Domain\Services\CheckoutFields::class
+			);
+
+			$value = $checkout_fields->get_field_from_object( 'educraft-core/billing-nip', $order, 'other' );
+
+			return is_string( $value ) ? $value : '';
+		}
+
+		return (string) $order->get_meta( '_wc_other/educraft-core/billing-nip', true );
+	}
+
+	private function get_nip_required_schema(): array {
+		return array(
+			'type'       => 'object',
+			'properties' => array(
+				'cart' => array(
+					'properties' => array(
+						'extensions' => array(
+							'properties' => array(
+								'educraft-core' => array(
+									'properties' => array(
+										'has_b2b' => array(
+											'const' => true,
+										),
+									),
+								),
+							),
+						),
+					),
+				),
+			),
+		);
+	}
+
+	private function get_nip_hidden_schema(): array {
+		return array(
+			'type'       => 'object',
+			'properties' => array(
+				'cart' => array(
+					'properties' => array(
+						'extensions' => array(
+							'properties' => array(
+								'educraft-core' => array(
+									'properties' => array(
+										'has_b2b' => array(
+											'const' => false,
+										),
+									),
+								),
+							),
+						),
+					),
+				),
+			),
+		);
 	}
 
 	private function is_valid_nip( string $nip ): bool {
@@ -91,7 +221,15 @@ class CheckoutFields {
 				continue;
 			}
 
-			if ( has_term( 'b2b', 'product_cat', $product_id ) ) {
+			$product = wc_get_product( $product_id );
+
+			if ( ! $product instanceof WC_Product ) {
+				continue;
+			}
+
+			$post_id_for_terms = $product->is_type( 'variation' ) ? $product->get_parent_id() : $product_id;
+
+			if ( has_term( 'b2b', 'product_cat', $post_id_for_terms ) ) {
 				return true;
 			}
 		}
